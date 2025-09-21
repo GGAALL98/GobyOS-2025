@@ -279,7 +279,6 @@ const cmds = [
   // Misc / Networking
   'ping -c 4 google.com',
   'traceroute github.com',
-  'curl -I https://openai.com',
   'wget https://example.com/file.zip',
   'scp user@server:~/file.txt .',
   'ssh user@server',
