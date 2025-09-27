@@ -12,24 +12,24 @@ const content = {
     'CV: <a href="CV.pdf" target="_blank" rel="noopener noreferrer">Download PDF</a>'
   ],
 
-  experience: [
-    '<a href="https://www.active-wave-control-lab.com" target="_blank" rel="noopener noreferrer">Lab Assistant</a> — Active Wave Control Lab (2025–Present)',
-    '  - Paid lab assistant: setup, support, HIL experiments, documentation',
-    '',
-    '<a href="https://www.active-wave-control-lab.com" target="_blank" rel="noopener noreferrer">Final Project Student</a> — Active Wave Control Lab (2025–Present)',
-    '  - Real-time wave control, MATLAB/Simulink, Speedgoat HIL testing',
-    '',
-    '<a href="https://ranor-lighting.com/" target="_blank" rel="noopener noreferrer">Ecommerce & IT Specialist</a> — Ranor Lighting Design',
-    '  - Web/e-commerce ops, security, analytics, 3D design collaboration',
-    '',
-    'Radio Technician — Israel Defense Forces (2017–2020)',
-    '  - RF systems, IT support, inventory, drone mapping/videography'
-  ],
+	experience: [
+	  'Lab Assistant — <a href="https://www.active-wave-control-lab.com" target="_blank" rel="noopener noreferrer">Active Wave Control Lab</a> (2025–Present)',
+	  '  - Development, setup, support, HIL experiments, documentation',
+	  '',
+	  'Final Project Student — <a href="https://www.active-wave-control-lab.com" target="_blank" rel="noopener noreferrer">Active Wave Control Lab</a> (2025–Present)',
+	  '  - Real-time wave control, MATLAB/Simulink, Speedgoat HIL testing',
+	  '',
+	  'Ecommerce & IT Specialist — <a href="https://ranor-lighting.com/" target="_blank" rel="noopener noreferrer">Ranor Lighting Design</a> (2021–2022)',
+	  '  - Web / e-commerce ops, security, analytics, 3D design collaboration',
+	  '',
+	  'Radio Technician — <a href="https://www.idf.il/en/" target="_blank" rel="noopener noreferrer">Israel Defense Forces</a> (2017–2020)',
+	  '  - RF systems, IT support, inventory, drone mapping/videography'
+	],
 
   engineering: [
     { label: 'Simulink', value: 100 },
     { label: 'MATLAB / Octave', value: 100 },
-    { label: 'Real Time Control', value: 60 },
+    { label: 'Real Time Control', value: 90 },
     { label: 'Julia', value: 80 },
     { label: 'Maxima', value: 100 }
   ],
@@ -101,33 +101,53 @@ function typeLine(panelEl, lines, index = 0, charIndex = 0) {
   }
 
   // Progress bar object -> use CSS transition for smooth deterministic fill
-  if (typeof current === 'object' && current.label) {
-    div.textContent = current.label;
+	if (typeof current === 'object' && current.label) {
+	  div.textContent = current.label;
 
-    const barContainer = document.createElement('div');
-    barContainer.className = 'progress-bar-container';
-    const bar = document.createElement('div');
-    bar.className = 'progress-bar';
-    barContainer.appendChild(bar);
-    div.appendChild(barContainer);
+	  const barContainer = document.createElement('div');
+	  barContainer.className = 'progress-bar-container';
 
-    // clamp target to [0,100]
-    const target = Math.max(0, Math.min(100, current.value));
-    // duration derived from PROGRESS_MS_PER_PERCENT
-    const duration = Math.max(60, Math.round(target * PROGRESS_MS_PER_PERCENT));
+	  const bar = document.createElement('div');
+	  bar.className = 'progress-bar';
+	  barContainer.appendChild(bar);
 
-    // Inline transition override — smooth linear fill
-    bar.style.transition = `width ${duration}ms linear`;
-    // Force layout + tiny delay so transition applies
-    requestAnimationFrame(() => {
-      // another micro-delay to be safe across browsers
-      setTimeout(() => { bar.style.width = target + '%'; }, 8);
-    });
+	  const percentLabel = document.createElement('span');
+	  percentLabel.className = 'progress-percent';
+	  percentLabel.textContent = '0%';
+	  barContainer.appendChild(percentLabel);
 
-    // Move on after animation + small buffer
-    setTimeout(() => typeLine(panelEl, lines, index + 1, 0), duration + 60);
-    return;
-  }
+	  div.appendChild(barContainer);
+
+	  const target = Math.max(0, Math.min(100, current.value));
+	  const duration = Math.max(60, Math.round(target * PROGRESS_MS_PER_PERCENT));
+
+	  bar.style.transition = `width ${duration}ms linear`;
+
+	  const colors = ['#f00', '#f60', '#ff0', '#6f0', '#0f0']; // red to yellow to green
+
+	  requestAnimationFrame(() => {
+	    setTimeout(() => { bar.style.width = target + '%'; }, 8);
+
+	    // Animate percentage + color
+	    let start = null;
+	    function step(ts) {
+	      if (!start) start = ts;
+	      const progress = Math.min((ts - start) / duration, 1);
+	      const perc = Math.round(progress * target);
+	      percentLabel.textContent = perc + '%';
+
+	      // Map percentage to palette index
+	      const colorIndex = Math.floor(perc / 100 * (colors.length - 1));
+	      bar.style.background = colors[colorIndex];
+
+	      if (progress < 1) requestAnimationFrame(step);
+	    }
+	    requestAnimationFrame(step);
+	  });
+
+	  setTimeout(() => typeLine(panelEl, lines, index + 1, 0), duration + 60);
+	  return;
+	}
 
   // Fallback: convert to string and move on
   div.textContent = String(current);
