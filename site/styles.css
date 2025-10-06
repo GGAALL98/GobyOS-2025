@@ -1,0 +1,169 @@
+@import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+:root{
+  --green: #00ff00;
+  --accent: #ff8c00;
+  --bg: #000;
+  --terminal-space: 9.5rem;
+}
+
+/* Base layout with CRT scanline effect */
+html, body { height:100%; margin:0; }
+body {
+  margin:0;
+  min-height:100vh;
+  font-family:'Pixelify Sans', monospace;
+  padding:2rem;
+  padding-bottom: calc(var(--terminal-space) + 2rem);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  color:var(--green);
+  background: #000;
+  background-image: 
+    repeating-linear-gradient(
+      to bottom, 
+      #000 0px,        /* solid black line */
+      #003300 1px,     /* dark green tint */
+      #001100 2px,     /* slightly brighter green */
+      #000 3px         /* back to black */
+    );
+  background-size: 100% 4px;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  box-sizing:border-box;
+}
+
+/* Links */
+a { color:var(--green); text-decoration:underline; }
+a:hover { text-decoration:none; }
+
+/* Hero */
+.hero {
+  border:4px double var(--green);
+  border-radius:12px;
+  padding:1.25rem 1.5rem;
+  margin-bottom:1.25rem;
+  width:100%;
+  max-width:1200px;
+  display:grid;
+  grid-template-columns:1fr;
+  gap:1rem;
+  align-items:center;
+  box-shadow: 0 0 6px #00ff00;
+  backdrop-filter: blur(1.25px);
+  -webkit-backdrop-filter: blur(1.25px);
+}
+@media(min-width:900px){
+  .hero { grid-template-columns:150px 1fr; gap:2rem; }
+  .hero .text { text-align:left; }
+}
+.hero img {
+  width:150px;
+  height:150px;
+  object-fit:cover;
+  border:4px double var(--green);
+  border-radius:8px;
+  padding:4px;
+  image-rendering:pixelated;
+  display:block;
+  box-shadow: 0 0 6px #00ff00;
+}
+.hero h1 { margin:0; font-size:2.1rem; }
+.hero p { margin:.25rem 0 0 0; font-size:1.05rem; }
+.nav-links{ margin-top:.5rem; }
+/*.nav-links a{ margin:0 .5rem; }*/
+
+/* Panels grid */
+.container {
+  width:100%;
+  max-width:1200px;
+  display:grid;
+  grid-template-columns:1fr;
+  gap:.9rem;
+}
+@media(min-width:1000px){
+  .container { grid-template-columns:repeat(2,1fr); }
+}
+
+/* Panel visual */
+.panel {
+  border:4px double var(--green);
+  border-radius:12px;
+  padding:.9rem;
+  min-height:200px;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+  box-sizing:border-box;
+  box-shadow: 0 0 6px #00ff00;
+  backdrop-filter: blur(1.25px);
+  -webkit-backdrop-filter: blur(1.25px);
+}
+
+/* Panel title */
+.panel-title {
+  display:flex;
+  align-items:center;
+  gap:.6rem;
+  margin:0 0 .5rem 0;
+  font-size:1.5rem;
+  font-weight:700;
+}
+.panel-title .dollar { font-size:1.4rem; line-height:1; color:var(--green); }
+.panel-title .name { letter-spacing:.6px; }
+
+/* Console text */
+.console-line { margin:.18rem 0; white-space:pre-wrap; line-height:1.25; font-size:1.15Srem; }
+
+.progress-bar-container {
+    position: relative;
+    width: 100%;
+    height: 18px;
+    background: #222;
+    margin-top: 4px;
+    border-radius: 3px;
+}
+
+.progress-bar {
+    height: 100%;
+    background: #0f0;
+    width: 0%;
+    border-radius: 3px;
+}
+
+.progress-percent {
+    position: absolute;
+    right: 4px;
+    top: 0;
+    font-size: 16px;
+    color: #fff;
+}
+
+/* Countdown */
+.countdown { margin-top:1rem; font-size:1.3rem; color:var(--accent); }
+
+/* Fixed bottom terminal */
+.bottom-terminal {
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  background:rgba(0,0,0,0.94);
+  color:var(--green);
+  font-family: "Press Start 2P", system-ui;
+  font-weight: 400;
+  font-style: normal;
+  font-size: .75rem;
+  padding:.55rem 1rem;
+  display:flex;
+  align-items:center;
+  z-index:999;
+  box-sizing:border-box;
+}
+.bottom-terminal .prompt { margin-right:.5rem; }
+.bottom-terminal .cursor { animation:blink 1s steps(1) infinite; margin-left:6px; }
+@keyframes blink { 0%,50%{opacity:1} 51%,100%{opacity:0} }
+.bottom-terminal .cmd-text { white-space:pre-wrap; font-size:0.75rem; }
