@@ -26,7 +26,7 @@ body {
   display:flex;
   align-items:flex-start;
   justify-content:flex-start;
-  padding:5rem 0 0 5rem;
+  padding:5rem 5rem 5rem 5rem;
   color: var(--green);
   background-image: 
     repeating-linear-gradient(
@@ -46,7 +46,9 @@ body {
 #screen {
   white-space: pre-wrap;
   line-height:1.3em;
-  font-size:clamp(12px,2vw,16px);
+  font-size: clamp(6px, 1.3vw, 14px);
+  word-break: break-word;
+  max-width: 100%;
 }
 
 .cursor {
