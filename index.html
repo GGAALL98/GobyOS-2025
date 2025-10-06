@@ -3,67 +3,189 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>GobyOS 2025 — Gal Ben</title>
-<link rel="stylesheet" href="styles.css">
+<title>GobyOS Boot - Gal Ben</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+:root {
+  --green: #00ff00;
+  --bg: #000;
+}
+
+/* Base body with CRT scanline effect */
+html, body {
+  height:100%;
+  margin:0;
+  font-family: "Press Start 2P", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+
+body {
+  display:flex;
+  align-items:flex-start;
+  justify-content:flex-start;
+  padding:5rem 0 0 5rem;
+  color: var(--green);
+  background-image: 
+    repeating-linear-gradient(
+      to bottom, 
+      #000 0px,
+      #003300 1px,
+      #001100 2px,
+      #000 3px
+    );
+  background-size: 100% 4px;
+  overflow:hidden;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* Preloader text */
+#screen {
+  white-space: pre-wrap;
+  line-height:1.3em;
+  font-size:clamp(12px,2vw,16px);
+}
+
+.cursor {
+  display:inline-block;
+  width:0.6em;
+  height:1em;
+  background: var(--green);
+  animation: blink 0.5s step-end infinite;
+  vertical-align: middle;
+}
+
+@keyframes blink { 50% { background:transparent; } }
+
+.blue { color:#33ccff; }
+.yellow { color:#ffff66; }
+.red { color: #ff0000; }
+</style>
+
+<link rel="prefetch" href="site/index.html">
+<link rel="preload" href="site/styles.css" as="style">
+<link rel="preload" href="site/app.js" as="script">
+<link rel="preload" href="site/profile.webp" as="image">
 </head>
 <body>
+<div id="screen"></div>
 
-<!-- HERO -->
-<div class="hero" id="top">
-  <img src="profile.webp" alt="Profile" class="profile-pic">
-  <div class="text">
-    <h1>GobyOS — Gal Ben</h1>
-    <p>Mechanical Engineering Student — real-time control, simulation & hands-on design</p>
-    <div class="nav-links">
-      <a href="#whoami-panel">$ WHOAMI</a> |
-      <a href="#experience-panel">$ EXPERIENCE</a> |
-      <a href="#engineering-panel">$ ENGINEERING</a>
-    </div>
-  </div>
-</div>
+<script>
+// BIOS lines
+const lines = [
+  "Goby Megatrends BIOS v4.98",
+  "© 1998-2025 Goby Megatrends Technologies Ltd.",
+  "",
+  "+----------------------------------------------+",
+  "| Processor: GobyCore Pentium II @ 266MHz      |",
+  "| L2 Cache: 512KB                              |",
+  "| Memory Test:                                 |",
+  "| Video Adapter: GobyVision PCI                |",
+  "| Primary Master: GobyDrive 2.1GB              |",
+  "| Keyboard: PS/2 Detected                      |",
+  "| Mouse: HP SpaceMouse Detected                |",
+  "+----------------------------------------------+",
+  "",
+  "Checking NVRAM...",
+  "Updating ESCD...",
+  "Verifying DMI Pool Data Done",
+  "",
+  "Starting GobyOS Bootloader...",
+  ""
+];
 
-<!-- PANELS -->
-<div class="container">
-  <div class="panel" id="whoami-panel">
-    <div class="panel-title"><span class="dollar">$</span><span class="name">WHOAMI</span></div>
-  </div>
+// Bootloader sequence
+const boot = [
+  "",
+  "[<span class='blue'>OK</span>]   Loading GobyKernel to disk",
+  "[<span class='blue'>OK</span>]   GobyVision GPU initialization",
+  "[<span class='blue'>OK</span>]   Loading device drivers:",
+  "[<span class='blue'>OK</span>]       goby_sound.sys",
+  "[<span class='blue'>OK</span>]       goby_serial.sys",
+  "[<span class='blue'>OK</span>]   Mounting root filesystem",
+  "[<span class='red'>FAIL</span>] Starting network manager",
+  "[<span class='blue'>OK</span>]   Starting user session services",
+  "",
+  "<span class='yellow'>Welcome to GobyOS [Build 1998.R2]</span>",
+  "",
+  "GobyOS boot complete.",
+  "Login: _"
+];
 
-  <div class="panel" id="experience-panel">
-    <div class="panel-title"><span class="dollar">$</span><span class="name">EXPERIENCE</span></div>
-  </div>
+// Memory test animation
+function memTest(callback) {
+  const memLine = document.createElement('div');
+  memLine.style.fontFamily = "'Press Start 2P'";
+  document.getElementById('screen').appendChild(memLine);
+  let mem = 0;
+  const total = 32768;
 
-  <div class="panel" id="engineering-panel">
-    <div class="panel-title"><span class="dollar">$</span><span class="name">ENGINEERING &amp; SIMULATION</span></div>
-  </div>
+  function step() {
+    mem += Math.floor(Math.random() * 2048) + 512;
+    if(mem > total) mem = total;
 
-  <div class="panel" id="cad-panel">
-    <div class="panel-title"><span class="dollar">$</span><span class="name">CAD / CAM / EDA</span></div>
-  </div>
+    const numStr = `${mem}KB`;
+    const base = "| Memory Test:";
+    const spaces = 42 - base.length - numStr.length;
 
-  <div class="panel" id="programming-panel">
-    <div class="panel-title"><span class="dollar">$</span><span class="name">PROGRAMMING / IT</span></div>
-  </div>
+    // Only add "OK" at the end
+    memLine.textContent = mem < total 
+      ? base + " " + numStr + " ".repeat(spaces) + "    |" 
+      : base + " " + numStr + " ".repeat(spaces) + " OK |";
 
-  <div class="panel" id="office-panel">
-    <div class="panel-title"><span class="dollar">$</span><span class="name">OFFICE &amp; WEB</span></div>
-  </div>
-</div>
+    if(mem < total) setTimeout(step, 15);
+    else callback();
+  }
+  step();
+}
 
-<!-- Countdown -->
-<div class="countdown" id="grad-countdown" style="padding-bottom: 3rem;" aria-live="polite"></div>
+// Typing animation
+const screen = document.getElementById('screen');
+let lineIndex = 0;
 
-<!-- Fixed bottom spacing -->
-<div style="padding-bottom: 4rem;" aria-hidden="true"></div>
+function typeLineHTML(html, callback) {
+  const div = document.createElement('div');
+  screen.appendChild(div);
+  let i = 0;
+  function step() {
+    if(i <= html.length){
+      div.innerHTML = html.slice(0,i);
+      i++;
+      setTimeout(step,2);
+    } else callback();
+  }
+  step();
+}
 
-<!-- Fixed bottom terminal -->
-<div class="bottom-terminal" aria-hidden="false">
-  <span class="prompt">$</span>
-  <span class="cmd-text" aria-hidden="true"></span>
-  <span class="cursor">█</span>
-</div>
+function typeLines(linesArray, nextSequence, onComplete) {
+  if(lineIndex < linesArray.length){
+    const line = linesArray[lineIndex++];
+    if(line.includes("Memory Test")) {
+      memTest(() => typeLines(linesArray,nextSequence,onComplete));
+    } else if(line.trim() === ""){
+      screen.appendChild(document.createElement('br'));
+      setTimeout(()=>typeLines(linesArray,nextSequence,onComplete),2);
+    } else typeLineHTML(line,()=>typeLines(linesArray,nextSequence,onComplete));
+  } else if(nextSequence){
+    lineIndex=0;
+    setTimeout(()=>typeLines(nextSequence,null,onComplete),2);
+  } else if(onComplete) onComplete();
+  else {
+    const cursor = document.createElement('span');
+    cursor.className='cursor';
+    screen.appendChild(cursor);
+  }
+}
 
-<!-- external script -->
-<script src="app.js" defer></script>
-
+// Start typing sequence and redirect
+window.onload = () => {
+  typeLines(lines, boot, () => {
+    setTimeout(()=>window.location.href='site/index.html',800);
+  });
+};
+</script>
 </body>
 </html>
