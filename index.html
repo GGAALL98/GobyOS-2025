@@ -1,226 +1,265 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>GobyOS Boot - Gal Ben</title>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>GobyOS Boot - Gal Ben</title>
 
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
 
-:root {
-  --green: #00ff00;
-  --bg: #000;
-}
+      :root {
+        --green: #00ff00;
+        --bg: #000;
+      }
 
-/* Base body with CRT scanline effect */
-html, body {
-  height:100%;
-  margin:0;
-  font-family: "Press Start 2P", system-ui;
-  font-weight: 400;
-  font-style: normal;
-}
+      /* Base body with CRT scanline effect */
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        font-family: "Press Start 2P", system-ui;
+        font-weight: 400;
+        font-style: normal;
+      }
 
-body {
-  display:flex;
-  align-items:flex-start;
-  justify-content:flex-start;
-  padding:5rem 5rem 5rem 5rem;
-  color: var(--green);
-  background-image: 
-    repeating-linear-gradient(
-      to bottom, 
-      #000 0px,
-      #003300 1px,
-      #001100 2px,
-      #000 3px
-    );
-  background-size: 100% 4px;
-  overflow:hidden;
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
-}
+      body {
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-start;
+        padding: 5rem 5rem 5rem 5rem;
+        color: var(--green);
+        background-image: repeating-linear-gradient(
+          to bottom,
+          #000 0px,
+          #003300 1px,
+          #001100 2px,
+          #000 3px
+        );
+        background-size: 100% 4px;
+        overflow: hidden;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        user-select: none;
+      }
 
-/* Preloader text */
-#screen {
-  white-space: pre-wrap;
-  line-height:1.3em;
-  font-size: clamp(6px, 1.3vw, 14px);
-  word-break: break-word;
-  max-width: 100%;
-}
+      /* Preloader text */
+      #screen {
+        white-space: pre-wrap;
+        line-height: 1.3em;
+        font-size: clamp(6px, 1.3vw, 14px);
+        word-break: break-word;
+        max-width: 100%;
+      }
 
-.cursor {
-  display:inline-block;
-  width:0.6em;
-  height:1em;
-  background: var(--green);
-  animation: blink 0.5s step-end infinite;
-  vertical-align: middle;
-}
+      @keyframes blink {
+        50% {
+          background: transparent;
+        }
+      }
 
-@keyframes blink { 50% { background:transparent; } }
+      .blue {
+        color: #33ccff;
+      }
+      .yellow {
+        color: #ffff66;
+      }
+      .red {
+        color: #ff0000;
+      }
 
-.blue { color:#33ccff; }
-.yellow { color:#ffff66; }
-.red { color: #ff0000; }
-</style>
+      /* disable text selection */
+      .no-select {
+        -webkit-touch-callout: none; /* iOS Safari */
+        -webkit-user-select: none; /* Safari */
+        -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+        user-select: none; /* Standard syntax */
+      }
+    </style>
 
-<!-- Primary Meta Tags -->
-<meta name="title" content="Gal Ben - Mechanical Engineer & Control Systems Developer">
-<meta name="description" content="Exploring control systems, mechanics, and acoustics. A minimalist engineer building ideas from simulation to hardware. Booting innovation from the command line.">
+    <script>
+      // Prevent right-click context menu
+      document.addEventListener("contextmenu", (e) => e.preventDefault());
+    </script>
 
-<!-- Open Graph / Facebook -->
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://ggaall98.github.io/GobyOS-2025/">
-<meta property="og:title" content="Gal Ben - Mechanical Engineer & Control Systems Developer">
-<meta property="og:description" content="Exploring control systems, mechanics, and acoustics. A minimalist engineer building ideas from simulation to hardware. Booting innovation from the command line.">
-<!-- <meta property="og:image" content="https://goby.dev/assets/preview.png"> -->
+    <!-- Primary Meta Tags -->
+    <meta
+      name="title"
+      content="Gal Ben - Mechanical Engineer & Control Systems Developer"
+    />
+    <meta
+      name="description"
+      content="Exploring control systems, mechanics, and acoustics. A minimalist engineer building ideas from simulation to hardware. Booting innovation from the command line."
+    />
 
-<!-- Twitter -->
-<!-- <meta name="twitter:card" content="summary_large_image"> -->
-<meta name="twitter:url" content="https://ggaall98.github.io/GobyOS-2025/">
-<meta name="twitter:title" content="Gal Ben - Mechanical Engineer & Control Systems Developer">
-<meta name="twitter:description" content="Exploring control systems, mechanics, and acoustics. A minimalist engineer building ideas from simulation to hardware. Booting innovation from the command line.">
-<!-- <meta name="twitter:image" content="https://goby.dev/assets/preview.png"> -->
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://ggaall98.github.io/GobyOS-2025/" />
+    <meta
+      property="og:title"
+      content="Gal Ben - Mechanical Engineer & Control Systems Developer"
+    />
+    <meta
+      property="og:description"
+      content="Exploring control systems, mechanics, and acoustics. A minimalist engineer building ideas from simulation to hardware. Booting innovation from the command line."
+    />
+    <!-- <meta property="og:image" content="https://goby.dev/assets/preview.png"> -->
 
-<!-- Theme & Color -->
-<meta name="theme-color" content="#0a0a0a">
-<meta name="color-scheme" content="dark light">
+    <!-- Twitter -->
+    <!-- <meta name="twitter:card" content="summary_large_image"> -->
+    <meta
+      name="twitter:url"
+      content="https://ggaall98.github.io/GobyOS-2025/"
+    />
+    <meta
+      name="twitter:title"
+      content="Gal Ben - Mechanical Engineer & Control Systems Developer"
+    />
+    <meta
+      name="twitter:description"
+      content="Exploring control systems, mechanics, and acoustics. A minimalist engineer building ideas from simulation to hardware. Booting innovation from the command line."
+    />
+    <!-- <meta name="twitter:image" content="https://goby.dev/assets/preview.png"> -->
 
-<!-- Technical SEO -->
-<meta name="robots" content="index, follow">
-<meta name="language" content="en">
-<meta name="author" content="Gal Ben">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Theme & Color -->
+    <meta name="theme-color" content="#0a0a0a" />
+    <meta name="color-scheme" content="dark light" />
 
-<!-- Performance & Branding -->
-<!-- <link rel="icon" type="image/png" href="/assets/favicon.png"> -->
-<!-- <link rel="manifest" href="/manifest.json"> -->
-<link rel="canonical" href="https://ggaall98.github.io/GobyOS-2025/">
+    <!-- Technical SEO -->
+    <meta name="robots" content="index, follow" />
+    <meta name="language" content="en" />
+    <meta name="author" content="Gal Ben" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<link rel="prefetch" href="site/index.html">
-<link rel="preload" href="site/styles.css" as="style">
-<link rel="preload" href="site/app.js" as="script">
-<link rel="preload" href="site/profile.webp" as="image">
-</head>
-<body>
-<div id="screen"></div>
+    <!-- Performance & Branding -->
+    <!-- <link rel="icon" type="image/png" href="/assets/favicon.png"> -->
+    <!-- <link rel="manifest" href="/manifest.json"> -->
+    <link rel="canonical" href="https://ggaall98.github.io/GobyOS-2025/" />
 
-<script>
-// BIOS lines
-const lines = [
-  "Goby Megatrends BIOS v4.98",
-  "© 1998-2025 Goby Megatrends Technologies Ltd.",
-  "",
-  "+----------------------------------------------+",
-  "| Processor: GobyCore Pentium II @ 266MHz      |",
-  "| L2 Cache: 512KB                              |",
-  "| Memory Test:                                 |",
-  "| Video Adapter: GobyVision PCI                |",
-  "| Primary Master: GobyDrive 2.1GB              |",
-  "| Keyboard: PS/2 Detected                      |",
-  "| Mouse: HP SpaceMouse Detected                |",
-  "+----------------------------------------------+",
-  "",
-  "Checking NVRAM...",
-  "Updating ESCD...",
-  "Verifying DMI Pool Data Done",
-  "",
-  "Starting GobyOS Bootloader...",
-  ""
-];
+    <link rel="prefetch" href="site/index.html" />
+    <link rel="preload" href="site/styles.css" as="style" />
+    <link rel="preload" href="site/app.js" as="script" />
+    <link rel="preload" href="site/profile.webp" as="image" />
+  </head>
+  <body>
+    <div id="screen"></div>
 
-// Bootloader sequence
-const boot = [
-  "",
-  "[<span class='blue'>OK</span>]   Loading GobyKernel to disk",
-  "[<span class='blue'>OK</span>]   GobyVision GPU initialization",
-  "[<span class='blue'>OK</span>]   Loading device drivers:",
-  "[<span class='blue'>OK</span>]       goby_sound.sys",
-  "[<span class='blue'>OK</span>]       goby_serial.sys",
-  "[<span class='blue'>OK</span>]   Mounting root filesystem",
-  "[<span class='red'>FAIL</span>] Starting network manager",
-  "[<span class='blue'>OK</span>]   Starting user session services",
-  "",
-  "<span class='yellow'>Welcome to GobyOS [Build 1998.R2]</span>",
-  "",
-  "GobyOS boot complete.",
-  "Login: _"
-];
+    <script>
+      // BIOS lines
+      const lines = [
+        "Goby Megatrends BIOS v4.98",
+        "© 1998-2025 Goby Megatrends Technologies Ltd.",
+        "",
+        "+----------------------------------------------+",
+        "| Processor: GobyCore Pentium II @ 266MHz      |",
+        "| L2 Cache: 512KB                              |",
+        "| Memory Test:                                 |",
+        "| Video Adapter: GobyVision PCI                |",
+        "| Primary Master: GobyDrive 2.1GB              |",
+        "| Keyboard: PS/2 Detected                      |",
+        "| Mouse: HP SpaceMouse Detected                |",
+        "+----------------------------------------------+",
+        "",
+        "Checking NVRAM...",
+        "Updating ESCD...",
+        "Verifying DMI Pool Data Done",
+        "",
+        "Starting GobyOS Bootloader...",
+        "",
+      ];
 
-// Memory test animation
-function memTest(callback) {
-  const memLine = document.createElement('div');
-  memLine.style.fontFamily = "'Press Start 2P'";
-  document.getElementById('screen').appendChild(memLine);
-  let mem = 0;
-  const total = 32768;
+      // Bootloader sequence
+      const boot = [
+        "",
+        "[<span class='blue'>OK</span>]   Loading GobyKernel to disk",
+        "[<span class='blue'>OK</span>]   GobyVision GPU initialization",
+        "[<span class='blue'>OK</span>]   Loading device drivers:",
+        "[<span class='blue'>OK</span>]       goby_sound.sys",
+        "[<span class='blue'>OK</span>]       goby_serial.sys",
+        "[<span class='blue'>OK</span>]   Mounting root filesystem",
+        "[<span class='red'>FAIL</span>] Starting network manager",
+        "[<span class='blue'>OK</span>]   Starting user session services",
+        "",
+        "<span class='yellow'>Welcome to GobyOS [Build 1998.R2]</span>",
+        "",
+        "GobyOS boot complete.",
+        "Login: _",
+      ];
 
-  function step() {
-    mem += Math.floor(Math.random() * 2048) + 512;
-    if(mem > total) mem = total;
+      // Memory test animation
+      function memTest(callback) {
+        const memLine = document.createElement("div");
+        memLine.style.fontFamily = "'Press Start 2P'";
+        document.getElementById("screen").appendChild(memLine);
+        let mem = 0;
+        const total = 32768;
 
-    const numStr = `${mem}KB`;
-    const base = "| Memory Test:";
-    const spaces = 42 - base.length - numStr.length;
+        function step() {
+          mem += Math.floor(Math.random() * 2048) + 512;
+          if (mem > total) mem = total;
 
-    // Only add "OK" at the end
-    memLine.textContent = mem < total 
-      ? base + " " + numStr + " ".repeat(spaces) + "    |" 
-      : base + " " + numStr + " ".repeat(spaces) + " OK |";
+          const numStr = `${mem}KB`;
+          const base = "| Memory Test:";
+          const spaces = 42 - base.length - numStr.length;
 
-    if(mem < total) setTimeout(step, 15);
-    else callback();
-  }
-  step();
-}
+          // Only add "OK" at the end
+          memLine.textContent =
+            mem < total
+              ? base + " " + numStr + " ".repeat(spaces) + "    |"
+              : base + " " + numStr + " ".repeat(spaces) + " OK |";
 
-// Typing animation
-const screen = document.getElementById('screen');
-let lineIndex = 0;
+          if (mem < total) setTimeout(step, 15);
+          else callback();
+        }
+        step();
+      }
 
-function typeLineHTML(html, callback) {
-  const div = document.createElement('div');
-  screen.appendChild(div);
-  let i = 0;
-  function step() {
-    if(i <= html.length){
-      div.innerHTML = html.slice(0,i);
-      i++;
-      setTimeout(step,2);
-    } else callback();
-  }
-  step();
-}
+      // Typing animation
+      const screen = document.getElementById("screen");
+      let lineIndex = 0;
 
-function typeLines(linesArray, nextSequence, onComplete) {
-  if(lineIndex < linesArray.length){
-    const line = linesArray[lineIndex++];
-    if(line.includes("Memory Test")) {
-      memTest(() => typeLines(linesArray,nextSequence,onComplete));
-    } else if(line.trim() === ""){
-      screen.appendChild(document.createElement('br'));
-      setTimeout(()=>typeLines(linesArray,nextSequence,onComplete),2);
-    } else typeLineHTML(line,()=>typeLines(linesArray,nextSequence,onComplete));
-  } else if(nextSequence){
-    lineIndex=0;
-    setTimeout(()=>typeLines(nextSequence,null,onComplete),2);
-  } else if(onComplete) onComplete();
-  else {
-    const cursor = document.createElement('span');
-    cursor.className='cursor';
-    screen.appendChild(cursor);
-  }
-}
+      function typeLineHTML(html, callback) {
+        const div = document.createElement("div");
+        screen.appendChild(div);
+        let i = 0;
+        function step() {
+          if (i <= html.length) {
+            div.innerHTML = html.slice(0, i);
+            i++;
+            setTimeout(step, 2);
+          } else callback();
+        }
+        step();
+      }
 
-// Start typing sequence and redirect
-window.onload = () => {
-  typeLines(lines, boot, () => {
-    setTimeout(()=>window.location.href='site/index.html',800);
-  });
-};
-</script>
-</body>
+      function typeLines(linesArray, nextSequence, onComplete) {
+        if (lineIndex < linesArray.length) {
+          const line = linesArray[lineIndex++];
+          if (line.includes("Memory Test")) {
+            memTest(() => typeLines(linesArray, nextSequence, onComplete));
+          } else if (line.trim() === "") {
+            screen.appendChild(document.createElement("br"));
+            setTimeout(
+              () => typeLines(linesArray, nextSequence, onComplete),
+              2,
+            );
+          } else
+            typeLineHTML(line, () =>
+              typeLines(linesArray, nextSequence, onComplete),
+            );
+        } else if (nextSequence) {
+          lineIndex = 0;
+          setTimeout(() => typeLines(nextSequence, null, onComplete), 2);
+        } else if (onComplete) onComplete();
+      }
+
+      // Start typing sequence and redirect
+      window.onload = () => {
+        typeLines(lines, boot, () => {
+          setTimeout(() => (window.location.href = "site/index.html"), 800);
+        });
+      };
+    </script>
+  </body>
 </html>
